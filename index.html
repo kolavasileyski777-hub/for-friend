@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -14,60 +14,87 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden;
         }
         .card {
             background: #181614;
             padding: 30px;
-            border-radius: 20px;
+            border-radius: 24px;
             border: 1px solid #2c2724;
             text-align: center;
             width: 350px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.8);
         }
         .title {
             font-size: 1.1rem;
             letter-spacing: 3px;
             font-weight: bold;
             text-transform: uppercase;
-            margin-bottom: 20px;
-        }
-        .photo-frame {
-            width: 100%;
-            height: 250px;
-            border-radius: 12px;
-            background: #231f1c;
-            border: 1px solid #4a3b32;
-            overflow: hidden;
             margin-bottom: 25px;
         }
-        .photo-frame img {
-            width: 100%;
-            height: 100%;
+        .vinyl-container {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #0d0c0b 20%, #231f1c 21%, #100f0e 100%);
+            margin: 0 auto 30px;
+            border: 3px solid #ffffff;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .vinyl-container img {
+            width: 50%;
+            height: 50%;
+            border-radius: 50%;
             object-fit: cover;
+            border: 2px solid #ffffff;
+        }
+        @keyframes rotateVinyl {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         .message-box {
             font-size: 1rem;
             line-height: 1.5;
             color: #a39081;
             min-height: 60px;
-            margin-bottom: 20px;
-            transition: all 0.5s ease;
+            margin-bottom: 25px;
+            transition: color 0.5s ease;
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
         .btn {
             background: #ffffff;
             color: #0d0c0b;
             border: none;
-            padding: 12px 28px;
+            padding: 12px;
             font-size: 0.9rem;
             font-weight: bold;
             letter-spacing: 1px;
             border-radius: 8px;
             cursor: pointer;
-            width: 100%;
+            transition: 0.2s;
         }
         .btn:hover {
             background: #a39081;
             color: #ffffff;
+        }
+        .btn-text {
+            background: transparent;
+            border: 1px solid #4a3b32;
+            color: #a39081;
+        }
+        audio {
+            width: 100%;
+            margin-top: 15px;
+            filter: invert(1) hue-rotate(180deg); /* Делает стандартный плеер темным */
         }
     </style>
 </head>
@@ -76,27 +103,45 @@
     <div class="card">
         <div class="title">🎵 HOOD ANGELS</div>
         
-        <div class="photo-frame">
+        <div class="vinyl-container" id="vinyl-disc">
             <img src="photo.jpg" alt="Photo">
         </div>
         
-        <div id="text-space" class="message-box">Нажми на кнопку ниже...</div>
+        <div id="text-space" class="message-box">Атмосферный плеер готов.</div>
         
-        <button class="btn" onclick="openCard()">Включить атмосферу</button>
+        <div class="controls">
+            <button class="btn" onclick="togglePlay()">PLAY / PAUSE</button>
+            <button class="btn btn-text" onclick="showText()">ОТ ДУШИ ✨</button>
+        </div>
+
+        <audio id="my-track" src="music.mp3" controls></audio>
     </div>
 
-    <audio id="my-track" src="music.mp3"></audio>
-
     <script>
-        function openCard() {
-            const player = document.getElementById('my-track');
-            player.play();
+        const player = document.getElementById('my-track');
+        const disc = document.getElementById('vinyl-disc');
 
+        function togglePlay() {
+            if (player.paused) {
+                player.play();
+                disc.style.animation = "rotateVinyl 4s linear infinite";
+                document.getElementById('text-space').innerText = "Трек играет... 🎧";
+            } else {
+                player.pause();
+                disc.style.animation = "none";
+                document.getElementById('text-space').innerText = "Пауза.";
+            }
+        }function showText() {
             document.getElementById('text-space').innerHTML = 
-                "Рад, что мы дружим. Ты суперская, умная и с тобой всегда весело поугарать. Оставайся такой же крутой и резкой! ☕✨";
-            
+                "Рад, что мы дружим. Ты веселая и умная, с тобой всегда хорошо. Оставайся такой же крутой и энергичной";
             document.getElementById('text-space').style.color = '#ffffff';
         }
+
+        // Если музыка кончится, пластинка остановится
+        player.onended = function() {
+            disc.style.animation = "none";
+            document.getElementById('text-space').innerText = "Трек завершен.";
+        };
     </script>
 
 </body>
